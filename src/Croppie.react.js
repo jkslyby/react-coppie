@@ -92,6 +92,7 @@ var Croppie = React.createClass({
 			contClass = `croppie-container ${(customClass ? customClass : '')}`,
 			customViewportClass = this.props.viewport.type ? 'cr-vp-' + this.props.viewport.type : " ",
 			preview;
+		console.log('this.state.previewStyle', this.state.previewStyle)
 		if(self.props.enableOrientation)
 			preview = <canvas  className="cr-image" ref="preview" style={this.state.previewStyle ||  {}}> </canvas>;
 		else
