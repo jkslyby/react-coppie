@@ -87,8 +87,9 @@ var Croppie = React.createClass({
 		}
 	},
 	render(){
+		const { customClass } = this.props;
 		var self = this,
-			contClass = 'croppie-container',
+			contClass = `croppie-container ${(customClass ? customClass : '')}`,
 			customViewportClass = this.props.viewport.type ? 'cr-vp-' + this.props.viewport.type : " ",
 			preview;
 		if(self.props.enableOrientation)
@@ -570,7 +571,7 @@ var Croppie = React.createClass({
 			w = vpLeft - ((imgDim.width - vpDim.width) / 2),
 			h = vpTop - ((imgDim.height - vpDim.height) / 2),
 			transform = new Transform(w, h, self._currentZoom);
-	
+
 		//css(self.elements.preview, CSS_TRANSFORM, transform.toString());
 		 var previewStyle = {};
 		 previewStyle[StyleRelated.CSS_TRANSFORM] = transform.toString();
