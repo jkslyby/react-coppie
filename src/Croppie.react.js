@@ -127,6 +127,7 @@ var Croppie = React.createClass({
 						<input type="range"
 							   className="cr-slider"
 							   step="0.0001"
+							   value={0.0}
 							   style={{display:this.props.showZoomer ? "": "none"}}
 							   onChange={this.changeZoom}
 							   ref="zoomer"
