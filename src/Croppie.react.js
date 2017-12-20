@@ -4,8 +4,6 @@ const ReactDOM 	= require("react-dom");
 const Transform = require("./Transform");
 const StyleRelated = require("./styleStuff");
 
-import merge from 'lodash.merge';
-
 ///////////
 var TransformOrigin = function (el) {
 	if (!el || !el.style[StyleRelated.CSS_TRANS_ORG]) {
@@ -98,9 +96,9 @@ var Croppie = React.createClass({
 			preview;
 		console.log('this.state.previewStyle', this.state.previewStyle)
 		if(self.props.enableOrientation)
-			preview = <canvas  className="cr-image" ref="preview" style={this.state.previewStyle ||  {}}> </canvas>;
+			preview = <canvas  className="cr-image" ref="preview" style={this.state.previewStyle}> </canvas>;
 		else
-			preview = <img src="" className="cr-image" ref="preview" style={this.state.previewStyle ||  {}}/>;
+			preview = <img src="" className="cr-image" ref="preview" style={this.state.previewStyle}/>;
 
 		var onWheelFunc = this.props.enableZoom ? this.onWheel : () =>{};
 		return (
@@ -279,7 +277,7 @@ var Croppie = React.createClass({
 		//css(self.elements.preview, newCss);
 
 		this.setState({
-			previewStyle : _.merge(newCss, this.state.previewStyle)
+			previewStyle : cssExtend(newCss,this.state.previewStyle)
 		});
 
 
