@@ -4,6 +4,8 @@ const ReactDOM 	= require("react-dom");
 const Transform = require("./Transform");
 const StyleRelated = require("./styleStuff");
 
+import merge from 'lodash.merge';
+
 ///////////
 var TransformOrigin = function (el) {
 	if (!el || !el.style[StyleRelated.CSS_TRANS_ORG]) {
@@ -277,7 +279,7 @@ var Croppie = React.createClass({
 		//css(self.elements.preview, newCss);
 
 		this.setState({
-			previewStyle : cssExtend(newCss,this.state.previewStyle)
+			previewStyle : _.merge(newCss, this.state.previewStyle)
 		});
 
 
