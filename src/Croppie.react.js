@@ -534,6 +534,7 @@ var Croppie = React.createClass({
 			zoomer.min = this.fix(minZoom, 4);
 			zoomer.max = this.fix(maxZoom, 4);
 			var defaultInitialZoom = Math.max((boundaryData.width / imgData.width), (boundaryData.height / imgData.height));
+			console.log('defaultInitialZoom', defaultInitialZoom)
 			initialZoom = self.data.boundZoom !== null ? self.data.boundZoom : defaultInitialZoom;
 			this._setZoomerVal(initialZoom);
 			this._currentZoom = initialZoom;
