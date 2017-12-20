@@ -51,7 +51,9 @@ var Croppie = React.createClass({
 		url 				: React.PropTypes.string
 	},
 	getInitialState(){
-		return {};
+		return {
+			previewStyle: {}
+		};
 	},
 	componentDidMount(){
 		this._bind(this.props.url);
@@ -127,6 +129,7 @@ var Croppie = React.createClass({
 						<input type="range"
 							   className="cr-slider"
 							   step="0.0001"
+							   value={0.0}
 							   style={{display:this.props.showZoomer ? "": "none"}}
 							   onChange={this.changeZoom}
 							   ref="zoomer"
@@ -489,7 +492,7 @@ var Croppie = React.createClass({
 		var self = this,
 			minZoom = 0,
 			maxZoom = 1.5,
-			initialZoom = 1,
+			initialZoom = 0,
 			cssReset = {},
 			img = self.refs.preview,
 			zoomer = self.refs.zoomer,
