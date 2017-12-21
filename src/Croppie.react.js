@@ -51,9 +51,7 @@ var Croppie = React.createClass({
 		url 				: React.PropTypes.string
 	},
 	getInitialState(){
-		return {
-			previewStyle: {}
-		};
+		return {};
 	},
 	componentDidMount(){
 		this._bind(this.props.url);
@@ -94,11 +92,10 @@ var Croppie = React.createClass({
 			contClass = `croppie-container ${(customClass ? customClass : '')}`,
 			customViewportClass = this.props.viewport.type ? 'cr-vp-' + this.props.viewport.type : " ",
 			preview;
-		console.log('this.state.previewStyle', this.state.previewStyle)
 		if(self.props.enableOrientation)
-			preview = <canvas  className="cr-image" ref="preview" style={this.state.previewStyle}> </canvas>;
+			preview = <canvas  className="cr-image" ref="preview" style={this.state.previewStyle ||  {}}> </canvas>;
 		else
-			preview = <img src="" className="cr-image" ref="preview" style={this.state.previewStyle}/>;
+			preview = <img src="" className="cr-image" ref="preview" style={this.state.previewStyle ||  {}}/>;
 
 		var onWheelFunc = this.props.enableZoom ? this.onWheel : () =>{};
 		return (
@@ -320,12 +317,9 @@ var Croppie = React.createClass({
 
 	 },
 	 _setZoomerVal(v) {//TODO
-	 	console.log('set zoomer', v)
 		if (this.props.enableZoom) {
 			var z = ReactDOM.findDOMNode(this.refs.zoomer),
 				val = this.fix(v, 4);
-				console.log('set zoomer val', val)
-				console.log('z value', Math.max(z.min, Math.min(z.max, val)))
 			z.value = Math.max(z.min, Math.min(z.max, val));
 		}
 	},
@@ -491,7 +485,7 @@ var Croppie = React.createClass({
 		var self = this,
 			minZoom = 0,
 			maxZoom = 1.5,
-			initialZoom = 0,
+			initialZoom = 1,
 			cssReset = {},
 			img = self.refs.preview,
 			zoomer = self.refs.zoomer,
