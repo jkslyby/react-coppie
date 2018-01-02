@@ -462,7 +462,7 @@ var Croppie = React.createClass({
 	 	console.log('source in bind', src)
 	 	console.log('imageEl in bind', imageEl)
 		var self = this;
-		var img = new Image(),
+		var img = imageEl || new Image(),
 			prom;
 
 		if (img.src === src) {
