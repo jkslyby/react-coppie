@@ -564,6 +564,9 @@ var Croppie = React.createClass({
 		self._originalImageWidth = imgData.width;
 		self._originalImageHeight = imgData.height;
 
+		console.log('imgData', imgData)
+		console.log('boundaryData', boundaryData)
+
 		if (self.props.enableZoom) {
 			if (self.props.enforceBoundary) {
 				minW = vpData.width / imgData.width;
@@ -582,11 +585,12 @@ var Croppie = React.createClass({
 			this._setZoomerVal(initialZoom);
 			this._currentZoom = initialZoom;
 			//dispatchChange(zoomer);TODO
+			console.log('initialZoom', initialZoom)
 		}
 		else {
 			self._currentZoom = initialZoom;
 		}
-
+		console.log('self._currentZoom', self._currentZoom)
 		transformReset.scale = self._currentZoom;
 		cssReset[StyleRelated.CSS_TRANSFORM] = transformReset.toString();
 		 this.setState({
@@ -608,6 +612,7 @@ var Croppie = React.createClass({
 		return this.refs.preview.offsetHeight > 0 && this.refs.preview.offsetWidth > 0;
 	},
 	 _centerImage() {
+	 	console.log('center image')
 		var self = this,
 			imgDim = self.refs.preview.getBoundingClientRect(),
 			vpDim = self.refs.viewport.getBoundingClientRect(),
@@ -617,6 +622,8 @@ var Croppie = React.createClass({
 			w = vpLeft - ((imgDim.width - vpDim.width) / 2),
 			h = vpTop - ((imgDim.height - vpDim.height) / 2),
 			transform = new Transform(w, h, self._currentZoom);
+		console.log('transform', transform)
+		console.log('self._currentZoom', self._currentZoom)
 
 		//css(self.elements.preview, CSS_TRANSFORM, transform.toString());
 		 var previewStyle = {};
