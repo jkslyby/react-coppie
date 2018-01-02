@@ -481,9 +481,11 @@ var Croppie = React.createClass({
 
 					if (self.props.enableOrientation) {
 						var canvas = ReactDOM.findDOMNode(this.refs.canvas);
+						console.log('canvas', canvas)
 						var ctx = canvas.getContext('2d');
 						// ctx.drawImage(img, left, top, width, height, 0, 0, outWidth, outHeight);
-						ctx.drawImage(img, 0, 0, 320, 320, 0, 0, 320, 320);
+						ctx.drawImage(img, 0, 0, 100, 100, 0, 0, 100, 100);
+
 					}
 
 
