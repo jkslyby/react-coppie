@@ -456,6 +456,8 @@ var Croppie = React.createClass({
 		return prom;
 	},
 	 loadImage(src, imageEl) {
+	 	console.log('source in bind', src)
+	 	console.log('imageEl in bind', imageEl)
 		var self = this;
 		var img = imageEl || new Image(),
 			prom;
@@ -468,6 +470,7 @@ var Croppie = React.createClass({
 		} else {
 			prom = new Promise(function (resolve, reject) {
 				if (self.props.enableOrientation && src.substring(0,4).toLowerCase() === 'http') {
+					console.log('should be here')
 					img.setAttribute('crossOrigin', 'anonymous');
 				}
 				img.onload = function () {
