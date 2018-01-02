@@ -92,6 +92,7 @@ var Croppie = React.createClass({
 			contClass = `croppie-container ${(customClass ? customClass : '')}`,
 			customViewportClass = this.props.viewport.type ? 'cr-vp-' + this.props.viewport.type : " ",
 			preview;
+		console.log('this.state.previewStyle', this.state.previewStyle)
 		if(self.props.enableOrientation)
 			preview = <canvas  className="cr-image" ref="preview" style={this.state.previewStyle ||  {}}> </canvas>;
 		else
@@ -455,6 +456,8 @@ var Croppie = React.createClass({
 		return prom;
 	},
 	 loadImage(src, imageEl) {
+	 	console.log('source in bind', src)
+	 	console.log('imageEl in bind', imageEl)
 		var self = this;
 		var img = imageEl || new Image(),
 			prom;
@@ -467,6 +470,7 @@ var Croppie = React.createClass({
 		} else {
 			prom = new Promise(function (resolve, reject) {
 				if (self.props.enableOrientation && src.substring(0,4).toLowerCase() === 'http') {
+					console.log('should be here')
 					img.setAttribute('crossOrigin', 'anonymous');
 				}
 				img.onload = function () {
@@ -671,6 +675,7 @@ var Croppie = React.createClass({
 		data.circle = circle;
 		data.url = self.data.url;
 		data.backgroundColor = backgroundColor;
+		console.log('type', type)
 
 		prom = new Promise(function (resolve, reject) {
 			if(type === 'rawCanvas'){
@@ -737,6 +742,9 @@ var Croppie = React.createClass({
 		};
 	},
 	_getCanvasResult(img, data) {
+		console.log('_getCanvasResult')
+		console.log('img', img)
+		console.log('data', data)
 		var points = data.points,
 			left = points[0],
 			top = points[1],
