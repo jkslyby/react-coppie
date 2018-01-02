@@ -451,7 +451,7 @@ var Croppie = React.createClass({
 		var prom = this.loadImage(url, self.refs.preview);
 		prom.then(function () {
 			self._updatePropertiesFromImage.call(self);
-			self.result();
+			self._getCanvasResult(self.refs.preview, self._get());
 			// _triggerUpdate.call(self);TODO
 		});
 		return prom;
@@ -752,7 +752,7 @@ var Croppie = React.createClass({
 			width = (points[2] - points[0]),
 			height = (points[3] - points[1]),
 			circle = data.circle,
-			canvas = document.createElement('canvas'),
+			canvas = ReactDOM.findDOMNode(this.refs.preview),
 			ctx = canvas.getContext('2d'),
 			outWidth = width,
 			outHeight = height;
