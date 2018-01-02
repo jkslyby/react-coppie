@@ -451,6 +451,7 @@ var Croppie = React.createClass({
 		var prom = this.loadImage(url, self.refs.preview);
 		prom.then(function () {
 			self._updatePropertiesFromImage.call(self);
+			self.result();
 			// _triggerUpdate.call(self);TODO
 		});
 		return prom;
