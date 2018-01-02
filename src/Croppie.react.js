@@ -739,6 +739,9 @@ var Croppie = React.createClass({
 		};
 	},
 	_getCanvasResult(img, data) {
+		console.log('_getCanvasResult')
+		console.log('img', img)
+		console.log('data', data)
 		var points = data.points,
 			left = points[0],
 			top = points[1],
