@@ -484,7 +484,7 @@ var Croppie = React.createClass({
 						console.log('canvas', canvas)
 						var ctx = canvas.getContext('2d');
 						// ctx.drawImage(img, left, top, width, height, 0, 0, outWidth, outHeight);
-						ctx.drawImage(img, 50, 50, 320, 320, 0, 0, 320, 320);
+						ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, img.width, img.height);
 
 					}
 
