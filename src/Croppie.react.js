@@ -92,7 +92,6 @@ var Croppie = React.createClass({
 			contClass = `croppie-container ${(customClass ? customClass : '')}`,
 			customViewportClass = this.props.viewport.type ? 'cr-vp-' + this.props.viewport.type : " ",
 			preview;
-		console.log('this.state.previewStyle', this.state.previewStyle)
 		if(self.props.enableOrientation)
 			preview = <canvas  className="cr-image" ref="preview" style={this.state.previewStyle ||  {}}> </canvas>;
 		else
@@ -451,16 +450,11 @@ var Croppie = React.createClass({
 		var prom = this.loadImage(url, self.refs.preview);
 		prom.then(function () {
 			self._updatePropertiesFromImage.call(self);
-			// self.refs.preview
-			// self._get(),
-			// self._getCanvasResult(self.refs.preview, self._get());
 			// _triggerUpdate.call(self);TODO
 		});
 		return prom;
 	},
 	 loadImage(src, imageEl) {
-	 	console.log('source in bind', src)
-	 	console.log('imageEl in bind', imageEl)
 		var self = this;
 		var img = imageEl || new Image(),
 			prom;
@@ -473,48 +467,9 @@ var Croppie = React.createClass({
 		} else {
 			prom = new Promise(function (resolve, reject) {
 				if (self.props.enableOrientation && src.substring(0,4).toLowerCase() === 'http') {
-					console.log('should be here')
 					img.setAttribute('crossOrigin', 'anonymous');
 				}
 				img.onload = function () {
-
-					if (self.props.enableOrientation) {
-
-						var data = self._get(),
-						  points = data.points,
-							left = points[0],
-							top = points[1],
-							width = (points[2] - points[0]),
-							height = (points[3] - points[1]),
-							circle = data.circle,
-							outWidth = width,
-							outHeight = height;
-							var canvas = ReactDOM.findDOMNode(self.refs.preview);
-							var ctx = canvas.getContext('2d');
-
-						if (data.outputWidth && data.outputHeight) {
-							outWidth = data.outputWidth;
-							outHeight = data.outputHeight;
-						}
-
-						canvas.width = outWidth;
-						canvas.height = outHeight;
-
-						if (data.backgroundColor) {
-							ctx.fillStyle = data.backgroundColor;
-							ctx.fillRect(0, 0, outWidth, outHeight);
-						}
-						ctx.drawImage(img, left, top, width, height, 0, 0, outWidth, outHeight);
-						if (circle) {
-							ctx.fillStyle = '#fff';
-							ctx.globalCompositeOperation = 'destination-in';
-							ctx.beginPath();
-							ctx.arc(outWidth / 2, outHeight / 2, outWidth / 2, 0, Math.PI * 2, true);
-							ctx.closePath();
-							ctx.fill();
-						}
-					}
-
 					setTimeout(function () {
 						resolve(img);
 					}, 1);
@@ -522,7 +477,6 @@ var Croppie = React.createClass({
 			});
 
 			img.src = src;
-
 		}
 
 		return prom;
@@ -564,9 +518,6 @@ var Croppie = React.createClass({
 		self._originalImageWidth = imgData.width;
 		self._originalImageHeight = imgData.height;
 
-		console.log('imgData', imgData)
-		console.log('boundaryData', boundaryData)
-
 		if (self.props.enableZoom) {
 			if (self.props.enforceBoundary) {
 				minW = vpData.width / imgData.width;
@@ -585,12 +536,11 @@ var Croppie = React.createClass({
 			this._setZoomerVal(initialZoom);
 			this._currentZoom = initialZoom;
 			//dispatchChange(zoomer);TODO
-			console.log('initialZoom', initialZoom)
 		}
 		else {
 			self._currentZoom = initialZoom;
 		}
-		console.log('self._currentZoom', self._currentZoom)
+
 		transformReset.scale = self._currentZoom;
 		cssReset[StyleRelated.CSS_TRANSFORM] = transformReset.toString();
 		 this.setState({
@@ -612,7 +562,6 @@ var Croppie = React.createClass({
 		return this.refs.preview.offsetHeight > 0 && this.refs.preview.offsetWidth > 0;
 	},
 	 _centerImage() {
-	 	console.log('center image')
 		var self = this,
 			imgDim = self.refs.preview.getBoundingClientRect(),
 			vpDim = self.refs.viewport.getBoundingClientRect(),
@@ -622,8 +571,6 @@ var Croppie = React.createClass({
 			w = vpLeft - ((imgDim.width - vpDim.width) / 2),
 			h = vpTop - ((imgDim.height - vpDim.height) / 2),
 			transform = new Transform(w, h, self._currentZoom);
-		console.log('transform', transform)
-		console.log('self._currentZoom', self._currentZoom)
 
 		//css(self.elements.preview, CSS_TRANSFORM, transform.toString());
 		 var previewStyle = {};
@@ -724,7 +671,6 @@ var Croppie = React.createClass({
 		data.circle = circle;
 		data.url = self.data.url;
 		data.backgroundColor = backgroundColor;
-		console.log('type', type)
 
 		prom = new Promise(function (resolve, reject) {
 			if(type === 'rawCanvas'){
@@ -791,9 +737,6 @@ var Croppie = React.createClass({
 		};
 	},
 	_getCanvasResult(img, data) {
-		console.log('_getCanvasResult')
-		console.log('img', img)
-		console.log('data', data)
 		var points = data.points,
 			left = points[0],
 			top = points[1],
