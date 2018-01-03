@@ -3,6 +3,7 @@ const ReactDOM 	= require("react-dom");
 
 const Transform = require("./Transform");
 const StyleRelated = require("./styleStuff");
+import exif from 'exif-js';
 
 ///////////
 var TransformOrigin = function (el) {
@@ -33,6 +34,7 @@ var Croppie = React.createClass({
 	vpRect :null,
 	transform : null,
 	_currentZoom :1,
+	orientation: 1,
 
 	data:{},//TODO
 	//////////////
@@ -48,7 +50,7 @@ var Croppie = React.createClass({
 		enforceBoundary 	: React.PropTypes.bool,
 		enableOrientation 	: React.PropTypes.bool,
 		update 				: React.PropTypes.func,
-		url 				: React.PropTypes.string
+		url 				: React.PropTypes.string,
 	},
 	getInitialState(){
 		return {};
@@ -93,10 +95,10 @@ var Croppie = React.createClass({
 			customViewportClass = this.props.viewport.type ? 'cr-vp-' + this.props.viewport.type : " ",
 			preview;
 		console.log('this.state.previewStyle', this.state.previewStyle)
-		if(self.props.enableOrientation)
-			preview = <canvas  className="cr-image" ref="preview" style={this.state.previewStyle ||  {}}> </canvas>;
-		else
-			preview = <img src="" className="cr-image" ref="preview" style={this.state.previewStyle ||  {}}/>;
+		// if(self.props.enableOrientation)
+		// 	preview = <canvas  className="cr-image" ref="canvasPreview" style={{display: 'none', ...this.state.previewStyle}}> </canvas>;
+		// else
+		// 	preview = <img src="" className="cr-image" ref="preview" style={this.state.previewStyle ||  {}}/>;
 
 		var onWheelFunc = this.props.enableZoom ? this.onWheel : () =>{};
 		return (
@@ -106,7 +108,8 @@ var Croppie = React.createClass({
 					 style={{width :this.props.boundary.width,height:this.props.boundary.height}}
 					 onWheel = {onWheelFunc}
 				>
-					{preview}
+					<canvas  className="cr-image" ref="canvasPreview" style={{zIndex: '-1', ...this.state.previewStyle}}> </canvas>
+					<img src="" className="cr-image" ref="preview" style={{zIndex: '1', ...this.state.previewStyle}}/>
 
 					<div tabIndex="0"
 						 onKeyDown={this.keyDown}
@@ -469,47 +472,51 @@ var Croppie = React.createClass({
 			});
 		} else {
 			prom = new Promise(function (resolve, reject) {
-				if (self.props.enableOrientation && src.substring(0,4).toLowerCase() === 'http') {
+				if (src.substring(0,4).toLowerCase() === 'http') {
 					console.log('should be here')
 					img.setAttribute('crossOrigin', 'anonymous');
 				}
 
 				img.onload = function () {
-          if (self.props.enableOrientation) {
-            var data = self._get(),
-              points = data.points,
-              left = points[0],
-              top = points[1],
-              width = (points[2] - points[0]),
-              height = (points[3] - points[1]),
-              circle = data.circle,
-              outWidth = width,
-              outHeight = height;
-              var canvas = ReactDOM.findDOMNode(self.refs.preview);
-              var ctx = canvas.getContext('2d');
+      //     if (self.props.enableOrientation) {
+      //       var data = self._get(),
+      //         points = data.points,
+      //         left = points[0],
+      //         top = points[1],
+      //         width = (points[2] - points[0]),
+      //         height = (points[3] - points[1]),
+      //         circle = data.circle,
+      //         outWidth = width,
+      //         outHeight = height;
+      //         var canvas = ReactDOM.findDOMNode(self.refs.canvasPreview);
+      //         var ctx = canvas.getContext('2d');
 
-            if (data.outputWidth && data.outputHeight) {
-              outWidth = data.outputWidth;
-              outHeight = data.outputHeight;
-            }
+      //       if (data.outputWidth && data.outputHeight) {
+      //         outWidth = data.outputWidth;
+      //         outHeight = data.outputHeight;
+      //       }
 
-            canvas.width = outWidth;
-            canvas.height = outHeight;
+            exif.getData(img, function() {
+							 self.orientation = exif.getTag(this, "Orientation");
+						})
 
-            if (data.backgroundColor) {
-              ctx.fillStyle = data.backgroundColor;
-              ctx.fillRect(0, 0, outWidth, outHeight);
-            }
-            ctx.drawImage(img, left, top, width, height, 0, 0, outWidth, outHeight);
-            if (circle) {
-              ctx.fillStyle = '#fff';
-              ctx.globalCompositeOperation = 'destination-in';
-              ctx.beginPath();
-              ctx.arc(outWidth / 2, outHeight / 2, outWidth / 2, 0, Math.PI * 2, true);
-              ctx.closePath();
-              ctx.fill();
-            }
-          }
+      //       canvas.width = outWidth;
+      //       canvas.height = outHeight;
+
+      //       if (data.backgroundColor) {
+      //         ctx.fillStyle = data.backgroundColor;
+      //         ctx.fillRect(0, 0, outWidth, outHeight);
+      //       }
+      //       ctx.drawImage(img, left, top, width, height, 0, 0, outWidth, outHeight);
+      //       if (circle) {
+      //         ctx.fillStyle = '#fff';
+      //         ctx.globalCompositeOperation = 'destination-in';
+      //         ctx.beginPath();
+      //         ctx.arc(outWidth / 2, outHeight / 2, outWidth / 2, 0, Math.PI * 2, true);
+      //         ctx.closePath();
+      //         ctx.fill();
+      //       }
+      //     }
 
 					setTimeout(function () {
 						resolve(img);
@@ -539,11 +546,11 @@ var Croppie = React.createClass({
 			minW,
 			minH;
 
-		if (!isVisible || self.data.bound) {
-			// if the croppie isn't visible or it doesn't need binding
-			console.warn("WHAAAAAAAAAAAAAAAAAAAAAAAAAAAT");
-			return;
-		}
+		// if (!isVisible || self.data.bound) {
+		// 	// if the croppie isn't visible or it doesn't need binding
+		// 	console.warn("WHAAAAAAAAAAAAAAAAAAAAAAAAAAAT");
+		// 	return;
+		// }
 
 		self.data.bound = true;
 		cssReset[StyleRelated.CSS_TRANSFORM] = transformReset.toString();
@@ -558,6 +565,8 @@ var Croppie = React.createClass({
 		boundaryData = self.refs.boundary.getBoundingClientRect();
 		self._originalImageWidth = imgData.width;
 		self._originalImageHeight = imgData.height;
+
+		console.log('imgData', imgData)
 
 		if (self.props.enableZoom) {
 			if (self.props.enforceBoundary) {
@@ -716,16 +725,21 @@ var Croppie = React.createClass({
 
 		prom = new Promise(function (resolve, reject) {
 			if(type === 'rawCanvas'){
+				console.log('rawCanvas')
 				resolve(self._getCanvasResult(self.refs.preview,data));
 			}
 			if (type === 'canvas' || type == 'base64') {
+				console.log('canvas or base64')
 				resolve(self._getBase64Result(data));
 			}
 			else if(type ==='blob') {
+				console.log('blob')
 				resolve(self._getBlobResult(data));
 			}
-			else
+			else {
+				console.log('else')
 				resolve(self._getHtmlResult(data));
+			}
 		});
 		return prom;
 	},
@@ -779,10 +793,8 @@ var Croppie = React.createClass({
 		};
 	},
 	_getCanvasResult(img, data) {
-		console.log('_getCanvasResult')
-		console.log('img', img)
-		console.log('data', data)
 		var points = data.points,
+			self = this,
 			left = points[0],
 			top = points[1],
 			width = (points[2] - points[0]),
@@ -805,7 +817,59 @@ var Croppie = React.createClass({
 			ctx.fillStyle = data.backgroundColor;
 			ctx.fillRect(0, 0, outWidth, outHeight);
 		}
-		ctx.drawImage(img, left, top, width, height, 0, 0, outWidth, outHeight);
+		console.log('self.orientation', self.orientation)
+
+		switch (self.orientation) {
+      case 1:
+          break;
+      case 2:
+         ctx.translate(width, 0);
+         ctx.scale(-1, 1);
+         break;
+      case 3:
+          ctx.translate(width, height);
+          ctx.rotate(180 / 180 * Math.PI);
+          break;
+      case 4:
+          ctx.translate(0, height);
+          ctx.scale(1, -1);
+          break;
+      case 5:
+          canvas.width = height;
+          canvas.height = width;
+          ctx.rotate(90 / 180 * Math.PI);
+          ctx.scale(1, -1);
+          break;
+      case 6:
+      		console.log('left', left)
+      		console.log('top', top)
+      		console.log('outHeight', outHeight)
+      		console.log('outWidth', outWidth)
+      		console.log('height', height)
+      		console.log('width', width)
+      		console.log('canvas.width', canvas.width)
+      		console.log('canvas.height', canvas.height)
+          canvas.width = height;
+          canvas.height = width;
+          ctx.rotate(90 / 180 * Math.PI);
+          ctx.translate(-left, -(height - (top / 2)));
+          break;
+      case 7:
+          canvas.width = height;
+          canvas.height = width;
+          ctx.rotate(270 / 180 * Math.PI);
+          ctx.translate(-width, height);
+          ctx.scale(1, -1);
+          break;
+      case 8:
+          canvas.width = height;
+          canvas.height = width;
+          ctx.translate(0, width);
+          ctx.rotate(270 / 180 * Math.PI);
+          break;
+    }
+
+		ctx.drawImage(img, left, top, width, height, 0, 0, width, height);
 		if (circle) {
 			ctx.fillStyle = '#fff';
 			ctx.globalCompositeOperation = 'destination-in';
